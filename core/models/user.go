@@ -30,7 +30,17 @@ func (user *User) SetPassword(password string) {
 
 }
 
-func (user User) GetEncryptedPassword(password string) string {
+func (user *User) UpdateImage(src string) {
+	settings.DB.Model(&user).Update("photo", src)
+	user.Photo = sql.NullString{String: src, Valid: true}
+}
+
+func (user *User) UpdateLastLoginTime() {
+	settings.DB.Model(&user).Update("last_login", time.Now())
+	user.LastLogin = sql.NullTime{Time: time.Now(), Valid: true}
+}
+
+func (user *User) GetEncryptedPassword(password string) string {
 
 	encryptPassword, err := encryption.Encrypt([]byte(password))
 	if err != nil {
@@ -51,7 +61,7 @@ func (user *User) CheckPassword(password string) bool {
 
 }
 
-func (user User) GetDataShown(args ...interface{}) map[string]interface{} {
+func (user *User) GetDataShown(args ...interface{}) map[string]interface{} {
 	data := map[string]interface{}{
 		"id":           user.Id,
 		"name":         user.Name,

@@ -27,3 +27,5 @@
 .idea/
 *.db
 *.config
+media
+static

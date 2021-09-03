@@ -12,9 +12,9 @@ var DB *gorm.DB
 
 const HTML_GLOB_PATH = "template/*"
 
-const STATIC_PATH = "/var/www/static/"
+const STATIC_PATH = "static/"
 
-const MEDIA_PATH = "/var/www/media/"
+const MEDIA_PATH = "media/"
 
 const MaxMultipartMemory = 8 << 20
 

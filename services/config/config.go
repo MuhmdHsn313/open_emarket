@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"open_emarker/settings"
 	"regexp"
@@ -22,6 +23,17 @@ type RunServerConfig struct {
 
 func (r *RunServerConfig) InitialConfig(values *ServerConfigValues) error {
 
+	// Create required paths
+	err := settings.Mkdir(settings.MEDIA_PATH)
+	if err != nil {
+		fmt.Print("Error with create " + settings.MEDIA_PATH)
+
+	}
+	err = settings.Mkdir(settings.STATIC_PATH)
+	if err != nil {
+		fmt.Print("Error with create " + settings.STATIC_PATH)
+	}
+
 	r.DSN = values.DSN
 	r.Port = values.Port
 	r.Host = values.Host
@@ -40,7 +52,7 @@ func (r *RunServerConfig) InitialConfig(values *ServerConfigValues) error {
 		fileData += key + "=" + value + "\n"
 	}
 
-	err := ioutil.WriteFile(settings.CONFIG_FILE_PATH, []byte(fileData), 0644)
+	err = ioutil.WriteFile(settings.CONFIG_FILE_PATH, []byte(fileData), 0644)
 	if err != nil {
 		return err
 	}

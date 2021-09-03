@@ -66,6 +66,7 @@ func (c UserController) LoginToAccount(ctx *gin.Context) {
 
 	if user.CheckPassword(loginInput.Password) {
 		token := jwt.InstanceFromJwtService().GenerateToken(user.Id)
+		user.UpdateLastLoginTime()
 		ctx.JSON(http.StatusOK, user.GetDataShown("token", token))
 	} else {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Please verify that your login information is correct!"})
@@ -82,4 +83,26 @@ func (c UserController) RefreshToken(ctx *gin.Context) {
 	user := ctx.MustGet("User").(*models.User)
 	token := jwt.InstanceFromJwtService().GenerateToken(user.Id)
 	ctx.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func (c UserController) UploadPhoto(ctx *gin.Context) {
+
+	photo, err := ctx.FormFile("photo")
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user := ctx.MustGet("User").(*models.User)
+	dst := settings.GetImagePath(photo)
+	err = ctx.SaveUploadedFile(photo, dst)
+	user.UpdateImage(dst)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user.GetDataShown())
 }
