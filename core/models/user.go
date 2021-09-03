@@ -40,6 +40,23 @@ func (user *User) UpdateLastLoginTime() {
 	user.LastLogin = sql.NullTime{Time: time.Now(), Valid: true}
 }
 
+func (user *User) UpdateWith(input UpdateAccountInput) {
+	updateUser := User{
+		Name:        input.Name,
+		Email:       input.Email,
+		Username:    input.Username,
+		Birthday:    input.Birthday,
+		PhoneNumber: input.PhoneNumber,
+	}
+
+	settings.DB.Model(&user).Updates(updateUser)
+
+	if input.Password != "" {
+		user.SetPassword(input.Password)
+	}
+
+}
+
 func (user *User) GetEncryptedPassword(password string) string {
 
 	encryptPassword, err := encryption.Encrypt([]byte(password))
@@ -101,7 +118,6 @@ type CreateAccountInput struct {
 	PhoneNumber string     `json:"phone_number" xml:"phone_number" binding:"required"`
 	Password    string     `json:"password" xml:"password" binding:"required"`
 	Birthday    *time.Time `json:"birthday" xml:"birthday" binding:"required"`
-	Photo       string     `json:"photo" xml:"photo"`
 }
 
 type LoginInput struct {
@@ -111,4 +127,13 @@ type LoginInput struct {
 
 func (i LoginInput) IsEmail() bool {
 	return strings.Contains(i.Username, "@")
+}
+
+type UpdateAccountInput struct {
+	Name        string     `json:"name"`
+	Email       *string    `json:"email"`
+	Username    *string    `json:"username"`
+	PhoneNumber string     `json:"phone_number"`
+	Password    string     `json:"password"`
+	Birthday    *time.Time `json:"birthday"`
 }

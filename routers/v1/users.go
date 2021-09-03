@@ -13,8 +13,10 @@ func RegisterUserRoutes(versionGroup *gin.RouterGroup) {
 	{
 		group.POST("/create", c_user.CreateAccount)
 		group.POST("/login", c_user.LoginToAccount)
-		group.GET("/me", jwt.JwtAuthorization(), c_user.GetMyAccount)
 		group.GET("/refresh", jwt.JwtAuthorization(), c_user.RefreshToken)
-		group.PUT("/photo", jwt.JwtAuthorization(), c_user.UploadPhoto)
+		me := group.Group("/me").Use(jwt.JwtAuthorization())
+		me.GET("", c_user.GetMyAccount)
+		me.PATCH("", c_user.UpdateAccount)
+		me.PUT("/photo", c_user.UploadPhoto)
 	}
 }

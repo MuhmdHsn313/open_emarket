@@ -19,7 +19,7 @@ func (c UserController) CreateAccount(ctx *gin.Context) {
 	var createInput models.CreateAccountInput
 	err := ctx.ShouldBindJSON(&createInput)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -105,4 +105,18 @@ func (c UserController) UploadPhoto(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, user.GetDataShown())
+}
+
+func (c UserController) UpdateAccount(ctx *gin.Context) {
+
+	var updateInput models.UpdateAccountInput
+	err := ctx.ShouldBindJSON(&updateInput)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user := ctx.MustGet("User").(*models.User)
+	user.UpdateWith(updateInput)
+	ctx.JSON(http.StatusOK, user.GetDataShown())
+
 }
