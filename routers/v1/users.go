@@ -14,5 +14,6 @@ func RegisterUserRoutes(versionGroup *gin.RouterGroup) {
 		group.POST("/create", c_user.CreateAccount)
 		group.POST("/login", c_user.LoginToAccount)
 		group.POST("/me", jwt.JwtAuthorization(), c_user.GetMyAccount)
+		group.POST("/refresh", jwt.JwtAuthorization(), c_user.RefreshToken)
 	}
 }

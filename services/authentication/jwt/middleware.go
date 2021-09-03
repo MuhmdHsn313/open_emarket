@@ -20,6 +20,7 @@ func JwtAuthorization() gin.HandlerFunc {
 			if id, ok := token.Claims.(jwt.MapClaims)["id"]; ok {
 				err = settings.DB.Where("id = ?", id.(string)).First(&user).Error
 				if err != nil {
+					fmt.Println(err)
 					ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "You do not have authentication!"})
 					return
 				}

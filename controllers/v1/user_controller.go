@@ -36,7 +36,7 @@ func (c UserController) CreateAccount(ctx *gin.Context) {
 
 	settings.DB.Create(&user)
 
-	token := jwt.NewJwtService().GenerateToken(user.Id)
+	token := jwt.InstanceFromJwtService().GenerateToken(user.Id)
 	ctx.JSON(http.StatusCreated, user.GetDataShown("token", token))
 
 }
@@ -65,7 +65,7 @@ func (c UserController) LoginToAccount(ctx *gin.Context) {
 	}
 
 	if user.CheckPassword(loginInput.Password) {
-		token := jwt.NewJwtService().GenerateToken(user.Id)
+		token := jwt.InstanceFromJwtService().GenerateToken(user.Id)
 		ctx.JSON(http.StatusOK, user.GetDataShown("token", token))
 	} else {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Please verify that your login information is correct!"})
@@ -78,6 +78,8 @@ func (c UserController) GetMyAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user.GetDataShown())
 }
 
-func (c UserController) name() {
-
+func (c UserController) RefreshToken(ctx *gin.Context) {
+	user := ctx.MustGet("User").(*models.User)
+	token := jwt.InstanceFromJwtService().GenerateToken(user.Id)
+	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
