@@ -9,3 +9,15 @@ const CONFIG_VALUE_VALIDATOR = `([A-Z]+)\s?=\s?([\w\d.\\\/ ]+)`
 const CONFIG_FILE_PATH = "settings.config"
 
 var DB *gorm.DB
+
+const HTML_GLOB_PATH = "template/*"
+
+const STATIC_PATH = "/var/www/static/"
+
+const MEDIA_PATH = "/var/www/media/"
+
+const MaxMultipartMemory = 8 << 20
+
+const JWT_EXPIRES_HOURS = 72
+
+const JWT_LOGIN_SUBJECT = "LOGIN_EVENT"
